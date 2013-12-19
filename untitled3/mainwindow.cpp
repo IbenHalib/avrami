@@ -32,6 +32,7 @@ void MainWindow::init()
 
     getMemory();
     setConfiguration();
+    initView();
 
 }
 
@@ -56,7 +57,7 @@ void MainWindow::addNucleus(int i, int j)
 void MainWindow::on_pushButton_clicked()
 {
     for (int var = 0; var < 10; ++var) {
-
+    vector->clear();
 
    this->init();
 
@@ -83,6 +84,10 @@ void MainWindow::on_pushButton_clicked()
         }
      }
       }
+
+   vector->append(QPointF(t, Nnew/double(n)));
+   curve->setSamples(vector);
+   ui->qwtPlot->replot();
 }
 
 
@@ -114,28 +119,29 @@ void MainWindow::setConfiguration()
     }
 }
 
-//void bk(int *i, int *j , int *k)
-//{
-//    if (*i < 0)
-//    {
-//        *j += N_x;
-//        *k += N_x;
-//        *i += N_x;
-//    }
-//    if (*i >= N_x )
-//    {
-//        *j -= N_x;
-//        *k -= N_x;
-//        *i -= N_x;
-//    }
 
-//    if (*j < 0)
-//        *j += N_y;
-//    if (*j >= N_y)
-//        *j -= N_y;
+void MainWindow::initView()
+{
+        curve = new QwtPlotCurve;
+        vector = new  QVector<QPointF>;
+        curve->attach(ui->qwtPlot);
 
-//    if (*k < 0)
-//        *k += N_z;
-//    if (*k >= N_z)
-//        *k -= N_z;
-//}
+        curve->setPen(QPen(QColor(255, 0, 0)));
+
+
+        grid = new QwtPlotGrid;
+        grid->enableXMin(true);
+        grid->setMajPen(QPen(Qt::black,0,Qt::DotLine));
+        grid->setMinPen(QPen(Qt::gray,0,Qt::DotLine));
+        grid->attach(ui->qwtPlot);
+
+        zoom = new QwtChartZoom(ui->qwtPlot);
+        zoom->setRubberBandColor(Qt::white);
+
+        whlzmsvc = new QWheelZoomSvc();
+        whlzmsvc->attach(zoom);
+
+        axzmsvc = new QAxisZoomSvc();
+        axzmsvc->attach(zoom);
+}
+

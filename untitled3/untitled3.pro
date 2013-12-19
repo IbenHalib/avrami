@@ -13,9 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp\
+        qaxiszoomsvc.cpp\
+        qwheelzoomsvc.cpp\
+        qwtchartzoom.cpp
 
-HEADERS  += mainwindow.h
+
+HEADERS += mainwindow.h\
+        qaxiszoomsvc.h\
+        qwheelzoomsvc.h\
+        qwtchartzoom.h
+
 
 FORMS    += mainwindow.ui
 INCLUDEPATH += /usr/include/qwt6/
