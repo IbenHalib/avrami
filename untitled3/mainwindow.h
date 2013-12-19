@@ -14,6 +14,18 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    double frequency, l, dp, dx, dy, dt, r, t, Nnew, speed,  *timeNucleus;
+    int **array, **arrayNucleus;
+    int NNucleus, n;
+    void init();
+    double my_rand();
+    void addNucleus(int i, int j);
+    void getMemory();
+    void setConfiguration();
+
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
