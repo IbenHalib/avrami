@@ -8,6 +8,7 @@
 #include "qaxiszoomsvc.h"
 #include "math.h"
 #include "qwt_plot_curve.h"
+#include "qwt_symbol.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,16 +28,20 @@ public:
     double my_rand();
     void addNucleus(int i, int j);
     void getMemory();
-    void setConfiguration();
+    void setConfigurationHomogeneous();
+    void setConfigurationHeterogeneous();
     void initView();
+    void plot();
+    void plotArray();
 
-    QVector<QPointF> *vector;
-    QwtPlotCurve *curve;
+    QVector<QPointF> *vector, *vectorNew, *vectorOld;
+    QwtPlotCurve *curve, *curveNew, *curveOld;
 
     QwtChartZoom *zoom;
     QWheelZoomSvc *whlzmsvc;
     QAxisZoomSvc *axzmsvc;
     QwtPlotGrid *grid;
+    QwtSymbol *symbolOld, *symbolNew;
 
 
 private slots:

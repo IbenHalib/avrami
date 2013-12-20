@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 20 02:15:56 2013
+** Created: Fri Dec 20 03:04:00 2013
 **      by: Qt User Interface Compiler version 4.8.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -40,22 +40,22 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(887, 603);
+        MainWindow->resize(983, 704);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         qwtPlot = new QwtPlot(centralWidget);
         qwtPlot->setObjectName(QString::fromUtf8("qwtPlot"));
-        qwtPlot->setGeometry(QRect(650, 0, 221, 291));
+        qwtPlot->setGeometry(QRect(760, 0, 221, 291));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(780, 310, 83, 25));
+        pushButton->setGeometry(QRect(880, 300, 83, 25));
         qwtPlot_2 = new QwtPlot(centralWidget);
         qwtPlot_2->setObjectName(QString::fromUtf8("qwtPlot_2"));
-        qwtPlot_2->setGeometry(QRect(0, 0, 651, 541));
+        qwtPlot_2->setGeometry(QRect(0, 0, 761, 651));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 887, 22));
+        menuBar->setGeometry(QRect(0, 0, 983, 22));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));

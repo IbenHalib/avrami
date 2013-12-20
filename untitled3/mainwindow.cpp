@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    srand(time(0));
 }
 
 MainWindow::~MainWindow()
@@ -17,21 +18,23 @@ void MainWindow::init()
 {
     this->l = 1e1;
     this->n = 1000;
-    frequency = 1e1;
-    speed = 1e-5;
-    dx = l /double(n);
+    frequency = 1e-1;
+    speed = 1e3;
+    dx = 1e-1;
+//    dx = l /double(n);
     dy = dx;
 //    l = dx * n;
 
-    dt =  1e1;
+    dt =  1e-3;
     t = 0;
 
 
     Nnew = 0;
-    NNucleus = 0;
+    NNucleus = 6;
 
     getMemory();
-    setConfiguration();
+//    setConfigurationHomogeneous();
+    setConfigurationHeterogeneous();
     initView();
 
 }
@@ -56,10 +59,23 @@ void MainWindow::addNucleus(int i, int j)
 
 void MainWindow::on_pushButton_clicked()
 {
-    for (int var = 0; var < 10; ++var) {
-    vector->clear();
+    this->init();
+    int nMax = pow (n, 2);
+    int q=0;
+    plot();
+    plotArray();
+    while (Nnew < nMax) {
+//    vector->clear();
 
-   this->init();
+        QApplication::processEvents();
+//        if (++q/3.0 == 1) {
+//         plotArray();
+//        } else {
+//            q = 0;
+//        }
+        plotArray();
+        plot();
+
 
     for (int k = 0; k < NNucleus; ++k) {
 
@@ -67,7 +83,8 @@ void MainWindow::on_pushButton_clicked()
 
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                if ((( pow(i - arrayNucleus[k][0], 2) + pow(j - arrayNucleus[k][1], 2)) < pow(r, 2)) && (array[i][j] == 0)) {
+                if ((( pow(i - arrayNucleus[k][0], 2) + pow(j - arrayNucleus[k][1], 2)) < pow(r, 2))
+                       && (array[i][j] == 0)) {
                     array[i][j] = -1;
                     Nnew++;
                 }
@@ -75,7 +92,7 @@ void MainWindow::on_pushButton_clicked()
         }
     }
 
-    t += dt;
+
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             if ((array[i][j] == 0) && (my_rand() < frequency*dx*dy*dt)) {
@@ -83,14 +100,46 @@ void MainWindow::on_pushButton_clicked()
             }
         }
      }
-      }
 
-   vector->append(QPointF(t, Nnew/double(n)));
-   curve->setSamples(vector);
-   ui->qwtPlot->replot();
+    t += dt;
+
+
+
+    }
+
 }
 
+void MainWindow::plot()
+{
+    double a = double(Nnew)/double(n*n);
+    vector->append(QPointF(t, a));
+    curve->setSamples(*vector);
+    ui->qwtPlot->replot();
+}
 
+void MainWindow::plotArray()
+{
+    vectorNew->clear();
+    vectorOld->clear();
+
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (array[i][j]==0) {
+                vectorOld->append(QPointF(i, j));
+
+            } else {
+                vectorNew->append(QPointF(i, j));
+            }
+        }
+
+
+    }
+    curveNew->setSamples(*vectorNew);
+    curveOld->setSamples(*vectorOld);
+    ui->qwtPlot_2->replot();
+
+}
 
 void MainWindow::getMemory()
 {
@@ -109,7 +158,7 @@ void MainWindow::getMemory()
     }
 }
 
-void MainWindow::setConfiguration()
+void MainWindow::setConfigurationHomogeneous()
 {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -119,14 +168,33 @@ void MainWindow::setConfiguration()
     }
 }
 
+void MainWindow::setConfigurationHeterogeneous()
+{
+    setConfigurationHomogeneous();
+    int NN = NNucleus;
+    int iTemp, jTemp;
+    NNucleus = 0;
+    for (int i = 0; i < NN ; i++) {
+        do {
+            iTemp = rand() % n;
+            jTemp = rand() % n;
+
+        } while (array[iTemp][jTemp] != 0);
+
+        addNucleus( iTemp, jTemp);
+    }
+}
 
 void MainWindow::initView()
 {
         curve = new QwtPlotCurve;
+
         vector = new  QVector<QPointF>;
         curve->attach(ui->qwtPlot);
 
-        curve->setPen(QPen(QColor(255, 0, 0)));
+
+
+//        curve->setPen(QPen(QColor(255, 0, 0)));
 
 
         grid = new QwtPlotGrid;
@@ -143,5 +211,39 @@ void MainWindow::initView()
 
         axzmsvc = new QAxisZoomSvc();
         axzmsvc->attach(zoom);
+
+
+        curveNew = new QwtPlotCurve;
+        curveOld = new QwtPlotCurve;
+
+        vectorNew = new  QVector<QPointF>;
+        vectorOld = new  QVector<QPointF>;
+
+        curveNew->attach(ui->qwtPlot_2);
+        curveOld->attach(ui->qwtPlot_2);
+
+        symbolNew = new QwtSymbol;
+        symbolNew->setStyle(QwtSymbol::Ellipse);
+
+        symbolNew->setPen(QColor(Qt::red));
+        symbolNew->setSize(1);
+
+        curveNew->setSymbol(symbolNew);
+        curveNew->setStyle(QwtPlotCurve::Dots);
+        curveNew->setPen(QPen(QColor(Qt::red)));
+
+//     QwtChartZoom *zoom2 = new QwtChartZoom(ui->qwtPlot_2);
+//        zoom2->setRubberBandColor(Qt::white);
+
+        symbolOld = new QwtSymbol;
+        symbolOld->setStyle(QwtSymbol::Ellipse);
+        symbolOld->setPen(QColor(Qt::black));
+         curveNew->setPen(QPen(QColor(Qt::black)));
+        symbolOld->setSize(1);
+
+//        curveOld->setPen(QPen(QColor(Qt::red)));
+        curveOld->setSymbol(symbolOld);
+        curveOld->setStyle(QwtPlotCurve::Dots);
+
 }
 
